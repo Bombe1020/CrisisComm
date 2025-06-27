@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ menu: 'dashboard' }" class="bg-gray-900 text-white">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CrisisComm Hub</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  
+
+  <style>
+  body {
+    background: linear-gradient(-45deg, #0f0f23, #1a1a2e, #0e0b16, #050505);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+  }
+
+  @keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  }
+
+  .glow-title {
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+    transition: all 0.4s ease;
+  }
+</style>
+
+</head>
+<body class="min-h-screen font-sans flex bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#000011]">
+
+
+<!-- Floating Logout Button (Mobile only) -->
+<button onclick="window.location.href='glass-login.html'"
+  class="sm:hidden fixed bottom-5 right-5 z-50 px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-full shadow-lg shadow-pink-900/30 transition-all backdrop-blur-md border border-white/10 text-xs font-semibold">
+  <i class="bi bi-box-arrow-right mr-1"></i> Logout
+</button>
+<!-- Top Navigation Bar -->
+
+
+
+
+  <!-- Sidebar -->
+  <aside class="w-64 min-h-screen bg-white/5 border-r border-white/10 p-4 hidden sm:block">
+    <h1 class="text-xl font-bold text-indigo-300 mb-6">CrisisComm Hub</h1>
+    <nav class="space-y-2 text-sm">
+      <template x-for="item in ['dashboard','monitor','issues','statements','team']">
+        <a href="#"
+           @click.prevent="menu = item"
+           :class="menu === item ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white'"
+           class="block px-3 py-2 rounded capitalize hover:bg-white/10 transition-all hover:pl-4 flex items-center gap-2">
+          <i :class="{
+            'bi bi-speedometer2': item === 'dashboard',
+            'bi bi-broadcast-pin': item === 'monitor',
+            'bi bi-exclamation-triangle-fill': item === 'issues',
+            'bi bi-chat-left-text-fill': item === 'statements',
+            'bi bi-people-fill': item === 'team'
+          }"></i>
+          <span x-text="item.charAt(0).toUpperCase() + item.slice(1)"></span>
+        </a>
+      </template>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-6 space-y-6">
+    <!-- Header -->
+    <header class="flex justify-between items-center">
+  <h2 class="text-xl font-semibold text-indigo-200 capitalize" x-text="menu + ' view'"></h2>
+  <div class="flex items-center gap-4">
+    <input type="text" placeholder="Search…" class="text-sm p-2 bg-white/10 text-white rounded border border-white/20 placeholder-gray-400 w-48 focus:ring focus:ring-indigo-400 focus:outline-none" />
+    <button onclick="window.location.href='glass-login.html'"
+  class="text-xs px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded shadow-md transition hover:scale-[1.03] active:scale-[.98]">
+  Logout
+</button>
+
+  </div>
+</header>
+
+
+    <!-- Dashboard -->
+    <section x-show="menu === 'dashboard'" x-transition class="space-y-6 fade-in-up">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="bg-white/10 p-4 rounded text-center hover-glow">
+          <i class="bi bi-bar-chart-fill text-indigo-400 text-2xl mb-2 block"></i>
+          <p class="text-gray-400">Mentions</p>
+          <p class="text-2xl font-bold tracking-tight">482</p>
+        </div>
+        <div class="bg-white/10 p-4 rounded text-center hover-glow">
+          <i class="bi bi-lightning-fill text-yellow-400 text-2xl mb-2 block"></i>
+          <p class="text-gray-400">Incidents</p>
+          <p class="text-2xl font-bold text-yellow-300">7</p>
+        </div>
+        <div class="bg-white/10 p-4 rounded text-center hover-glow">
+          <i class="bi bi-heart-pulse-fill text-green-400 text-2xl mb-2 block"></i>
+          <p class="text-gray-400">Sentiment</p>
+          <p class="text-2xl font-bold text-green-400">74%</p>
+        </div>
+        <div class="bg-white/10 p-4 rounded text-center hover-glow">
+          <i class="bi bi-clock-history text-pink-400 text-2xl mb-2 block"></i>
+          <p class="text-gray-400">Response Time</p>
+          <p class="text-2xl font-bold text-pink-300">1h 02m</p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white/10 p-4 rounded"><canvas id="sentimentChart"></canvas></div>
+        <div class="bg-white/10 p-4 rounded"><canvas id="volumeChart"></canvas></div>
+      </div>
+    </section>
+	<!-- Monitor -->
+      <section x-show="menu === 'monitor'" x-transition class="space-y-2">
+        <h3 class="text-sm text-white/60 uppercase">Live Media Monitor</h3>
+        <p class="text-sm text-gray-400 bg-white/5 p-4 rounded">Sample: This section can integrate with X/Twitter, RSS, or NLP APIs to show real-time mentions.</p>
+      </section>
+
+    <!-- Issues -->
+    <section x-show="menu === 'issues'" x-transition class="space-y-4">
+      <h3 class="text-sm uppercase text-white/60">Crisis Log</h3>
+      <ul class="space-y-2 text-sm">
+        <template x-for="item in [
+          '⚠️ CEO quote misinterpreted by regional news outlet',
+          '🚨 Hashtag #BrandFail trending in South Africa',
+          '🧯 Statement sent for legal review · ETA 30 min',
+          '📉 Negative reviews spike on Trustpilot',
+          '📺 Talk show panel mentions product boycott',
+          '🟡 Journalist contacted via LinkedIn',
+          '🔔 Internal employee memo leaked on X',
+          '⚡ Facebook post gaining 1k shares/hour',
+          '📌 Press request from Reuters waiting',
+          '🔴 Sentiment below 30% for past 2 hours'
+        ]">
+          <li class="bg-white/10 rounded p-3" x-text="item"></li>
+        </template>
+      </ul>
+    </section>
+
+    <!-- Statements -->
+    <section x-show="menu === 'statements'" x-transition class="space-y-4">
+      <h3 class="text-sm uppercase text-white/60">Pre-Approved Statements</h3>
+      <ul class="space-y-2 text-sm">
+        <template x-for="stmt in [
+          'We’re actively investigating the issue and will respond shortly.',
+          'We take all concerns seriously and value open communication.',
+          'Our team is engaged and we’ll share updates as they’re confirmed.',
+          'Transparency is at the heart of how we operate.',
+          'We recognize the community’s concerns and are listening carefully.',
+          'At this moment, accuracy matters — and we’re gathering all facts.',
+          'This does not reflect the standards we hold ourselves to.',
+          'We are committed to correcting this promptly and fully.',
+          'Public trust is earned. We intend to do so with action.',
+          'We appreciate your patience as we resolve the situation.'
+        ]">
+          <li class="bg-white/10 rounded p-3 flex justify-between items-center">
+            <span x-text="stmt"></span>
+            <button @click="navigator.clipboard.writeText(stmt)" class="text-indigo-300 hover:underline text-xs">Copy</button>
+          </li>
+        </template>
+      </ul>
+    </section>
+
+
+      <!-- Statements -->
+      <section x-show="menu === 'statements'" x-transition class="space-y-4">
+        <h3 class="text-sm text-white/60 uppercase">Pre-Approved Responses</h3>
+        <div class="space-y-3 text-sm">
+          <template x-for="stmt in [
+            'We are actively investigating and will share updates.',
+            'We take this seriously and are addressing it swiftly.',
+            'Transparency is our priority. We’re committed to action.'
+          ]">
+            <div class="flex justify-between items-center bg-white/10 p-3 rounded">
+              <span x-text="stmt"></span>
+              <button @click="navigator.clipboard.writeText(stmt)" class="text-indigo-300 hover:underline">Copy</button>
+            </div>
+          </template>
+        </div>
+      </section>
+
+      <!-- Team -->
+      <section x-show="menu === 'team'" x-transition class="space-y-4">
+        <h3 class="text-sm text-white/60 uppercase">Comms Team</h3>
+                <div class="bg-white/10 p-4 rounded">
+          <strong>🛠️ Solly – Platform Architect</strong>
+          <p class="text-gray-400">Manages infrastructure and deploys updates.</p>
+        </div>
+        <div class="bg-white/10 p-4 rounded">
+          <strong>🧠 Mpho – Intelligence Analyst</strong>
+          <p class="text-gray-400">Tracks issue evolution and recommends action paths.</p>
+        </div>
+        <div class="bg-white/10 p-4 rounded">
+          <strong>📨 Lebo – Stakeholder Liaison</strong>
+          <p class="text-gray-400">Communicates updates to partners and internal teams.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+
+  <!-- Chart.js setup -->
+  <script>
+    document.addEventListener('alpine:init', () => {
+      const ctx1 = document.getElementById('sentimentChart').getContext('2d');
+      new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+          datasets: [{
+            label: 'Sentiment',
+            data: [72, 65, 58, 48, 74],
+            borderColor: '#f472b6',
+            backgroundColor: 'rgba(244,114,182,0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: 'white' } }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: 'white' } },
+            x: { ticks: { color: 'white' } }
+          }
+        }
+      });
+
+      const ctx2 = document.getElementById('volumeChart').getContext('2d');
+      new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['Press', 'Social', 'Email', 'Broadcast'],
+          datasets: [{
+            label: 'Mentions',
+            data: [14, 42, 9, 24],
+            backgroundColor: ['#818cf8', '#f472b6', '#34d399', '#facc15']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: 'white' } }
+          },
+          scales: {
+            y: { beginAtZero: true, ticks: { color: 'white' } },
+            x: { ticks: { color: 'white' } }
+          }
+        }
+      });
+    });
+  </script>
+  <!-- Footer -->
+
+
+</body>
+</html>
